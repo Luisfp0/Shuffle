@@ -6,7 +6,7 @@ import IndexPage from "./pages/Index.jsx";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<IndexPage />} />
+      <Route path="/Shuffle" element={<IndexPage />} />
     </Routes>
   );
 }
