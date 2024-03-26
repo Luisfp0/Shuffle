@@ -3,7 +3,7 @@ module.exports = {
     "./src/pug/*.pug",
     "./src/html/*.html",
     "./src/pages/*.jsx",
-    "./public/*.html",
+    "./src/components/*.jsx",
   ],
   theme: {
     extend: [],

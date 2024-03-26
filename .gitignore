@@ -1,0 +1,5 @@
+# Ignorar o diretório do servidor
+server/
+
+# Ignorar todos os arquivos .env em qualquer diretório
+*.env

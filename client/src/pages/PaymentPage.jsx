@@ -1,40 +1,55 @@
-import { useEffect, useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import CheckOutForm from "../components/CheckoutForm";
+import React, { useState, useEffect } from "react";
 
-const stripePromise = loadStripe(
-  "pk_test_51OyGQT094BOTwk2YwarxukO4yj7iTqTT3XzD6zr7MNCvprt880JPh4indLYdUreF8qxYPWoBHK88DbeZOgt803Pk00c8HbyOBG"
-);
-function Payment(props) {
-  const [clientSecret, setClientSecret] = useState("");
-
-  useEffect(() => {
-    fetch("http://localhost:5252/create-payment-intent", {
-      method: "Post",
-      body: JSON.stringify({}),
-    }).then(async (r) => {
-      const { clientSecret } = await r.json();
-      setClientSecret(clientSecret);
-    });
-  }, []);
-
-  const options = {
-    clientSecret,
-  };
-
-  return (
-    <div className="flex justify-center">
+const ProductDisplay = () => (
+  <section
+    style={{
+      background: "url(gradia-assets/images/hero/bg.png) no-repeat",
+      backgroundSize: "cover",
+      minHeight: "100vh",
+    }}
+    className="flex flex-col items-center justify-center"
+  >
+    <div className="text-white text-center flex flex-col justify-center items-center">
+      <img
+        className="w-auto"
+        src="https://i.imgur.com/EHyR2nP.png"
+        alt="The cover of Stubborn Attachments"
+      />
       <div>
-        <h1>React Stripeand the Payment Element</h1>
-        {stripePromise && clientSecret && (
-          <Elements stripe={stripePromise} options={options}>
-            <CheckOutForm />
-          </Elements>
-        )}
+        <h3>Nome do produto</h3>
+        <h5>Valor R$0,50</h5>
       </div>
     </div>
-  );
-}
+    <form action="http://localhost:5252/create-checkout-session" method="POST">
+      <button className="text-white" type="submit">
+        Checkout
+      </button>
+    </form>
+  </section>
+);
 
-export default Payment;
+const Message = ({ message }) => (
+  <section>
+    <p>{message}</p>
+  </section>
+);
+
+export default function Payment() {
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+
+    if (query.get("success")) {
+      setMessage("Order placed! You will receive an email confirmation.");
+    }
+
+    if (query.get("canceled")) {
+      setMessage(
+        "Order canceled -- continue to shop around and checkout when you're ready."
+      );
+    }
+  }, []);
+
+  return message ? <Message message={message} /> : <ProductDisplay />;
+}

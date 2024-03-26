@@ -7,7 +7,8 @@ import Payment from "./pages/PaymentPage.jsx";
 function App() {
   return (
     <Routes>
-      <Route path="/Shuffle/" element={<IndexPage />} />
+      {/* <Route path="/Shuffle/" element={<IndexPage />} /> */}
+      <Route path="/" element={<IndexPage />} />
       <Route path="/payment" element={<Payment />} />
       <Route path="/completion" element={<Completion />} />
     </Routes>

@@ -30,14 +30,15 @@ export default function CheckoutForm() {
     setIsProcessing(false);
   };
 
+  const paymentElementOptions = {
+    layout: "tabs",
+  };
+
   return (
     <form onSubmit={handleSubmit}>
-      <PaymentElement />
-      <button
-        disabled={isProcessing}
-        className="bg-gray-100 px-[30px] py-[30px]"
-      >
-        <span>{isProcessing ? "Processing ... " : "Pay now"}</span>
+      <PaymentElement options={paymentElementOptions} />
+      <button disabled={isProcessing || !stripe || !elements}>
+        <span>{isProcessing ? <div></div> : "Pay now"}</span>
       </button>
       {/* Show any error or success messages */}
       {message && <div>{message}</div>}

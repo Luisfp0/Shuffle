@@ -4,7 +4,7 @@ import svgrPlugin from "vite-plugin-svgr";
 import tailwindcss from "tailwindcss";
 
 export default defineConfig({
-  base: "/Shuffle",
+  base: "/",
   build: {
     outDir: "build",
   },
