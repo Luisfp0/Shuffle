@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+const VITE_API_URL = import.meta.env.VITE_API_URL;
+console.log(VITE_API_URL);
 
 const ProductDisplay = () => (
   <section
@@ -11,7 +13,6 @@ const ProductDisplay = () => (
   >
     <div className="text-white text-center flex flex-col justify-center items-center">
       <img
-        className="w-auto"
         src="https://i.imgur.com/EHyR2nP.png"
         alt="The cover of Stubborn Attachments"
       />
@@ -20,7 +21,7 @@ const ProductDisplay = () => (
         <h5>Valor R$0,50</h5>
       </div>
     </div>
-    <form action="http://localhost:5252/create-checkout-session" method="POST">
+    <form action={`${VITE_API_URL}/create-checkout-session`} method="POST">
       <button className="text-white" type="submit">
         Checkout
       </button>

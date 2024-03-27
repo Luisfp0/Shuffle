@@ -35,6 +35,44 @@ app.post("/create-checkout-session", async (req, res) => {
   res.redirect(303, session.url);
 });
 
+app.post(
+  "/webhook",
+  express.json({ type: "application/json" }),
+  (request, response) => {
+    const event = request.body;
+
+    const eventTypes = {
+      "payment_intent.succeeded": handlePaymentIntentSucceeded,
+      "payment_method.attached": handlePaymentMethodAttached,
+    };
+
+    function handlePaymentIntentSucceeded(event) {
+      // Handle the successful payment intent.
+      const paymentIntent = event.data.object;
+      console.log("Received payment_intent.succeeded event:");
+      console.log(paymentIntent);
+    }
+
+    function handlePaymentMethodAttached(event) {
+      // Happens when a customer updates or adds a PaymentMethod.
+      const paymentMethod = event.data.object;
+      console.log("Received payment_method.attached event:");
+      console.log(paymentMethod);
+    }
+
+    const eventType = event.type;
+    const eventHandler = eventTypes[eventType];
+
+    if (eventHandler) {
+      eventHandler(event);
+    } else {
+      console.log(`Unhandled event type ${eventType}`);
+    }
+
+    response.json({ received: true });
+  }
+);
+
 app.listen(5252, () =>
   console.log(`Node server listening at http://localhost:5252`)
 );
