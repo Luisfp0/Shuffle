@@ -1,8 +1,7 @@
 const express = require("express");
 const app = express();
 const { resolve } = require("path");
-const cors = require("cors");
-app.use(cors());
+app.use(express.json());
 const env = require("dotenv").config({ path: "./.env" });
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2022-08-01",
@@ -13,26 +12,32 @@ app.use(express.static(process.env.STATIC_DIR));
 const YOUR_DOMAIN = "http://localhost:5173";
 
 app.post("/create-checkout-session", async (req, res) => {
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: [
-      {
-        price_data: {
-          currency: "BRL",
-          product_data: {
-            name: "Product Name",
+  const { email } = req.body;
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "BRL",
+            product_data: {
+              name: "Product Name",
+            },
+            unit_amount: 50,
           },
-          unit_amount: 50,
+          quantity: 1,
         },
-        quantity: 1,
-      },
-    ],
-    mode: "payment",
-    success_url: `${YOUR_DOMAIN}?success=true`,
-    cancel_url: `${YOUR_DOMAIN}?canceled=true`,
-  });
+      ],
+      mode: "payment",
+      success_url: `${YOUR_DOMAIN}?success=true`,
+      cancel_url: `${YOUR_DOMAIN}?canceled=true`,
+    });
 
-  res.redirect(303, session.url);
+    res.json({ sessionId: session.id, checkoutUrl: session.url });
+  } catch (error) {
+    console.error("Erro ao criar a sessão de checkout:", error);
+    res.status(500).json({ error: "Erro ao criar a sessão de checkout" });
+  }
 });
 
 app.post(
